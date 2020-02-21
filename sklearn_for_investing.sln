@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "sklearn_for_investing", "sklearn_for_investing\sklearn_for_investing.pyproj", "{FD889F90-7CC5-4B91-BA49-5CEBB6CA50F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD889F90-7CC5-4B91-BA49-5CEBB6CA50F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD889F90-7CC5-4B91-BA49-5CEBB6CA50F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9F420E48-BF85-4E28-89E3-8C27B2115906}
+	EndGlobalSection
+EndGlobal
