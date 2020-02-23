@@ -6,7 +6,7 @@ import os
 import time
 import pandas
 import sklearn
-import matplotlib
+import matplotlib.pyplot as pyplot
 
 def introduction():
     """
@@ -19,12 +19,12 @@ def introduction():
     classifier.fit(variable_x, variable_y)
     prediction = classifier.predict(dataset.data[-1])
     print('Prediction:', prediction)
-    matplotlib.pyplot.imshow(
+    pyplot.imshow(
         dataset.images[-1],
-        cmap=matplotlib.pyplot.get_cmap('gray'),
+        cmap=pyplot.get_cmap('gray'),
         interpoation='nearest'
         )
-    matplotlib.pyplot.show()
+    pyplot.show()
 
 def key_statistics(gather='Total Debt/Equity (mrq)'):
     """
