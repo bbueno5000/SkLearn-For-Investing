@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /sklearn_for_investing/intraQuarter
+/sklearn_for_investing/TotalDebtEquitymrq.csv

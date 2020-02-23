@@ -6,7 +6,7 @@ import os
 import time
 import pandas
 import sklearn
-from matplotlib import pyplot
+import matplotlib
 
 def introduction():
     """
@@ -19,8 +19,12 @@ def introduction():
     classifier.fit(variable_x, variable_y)
     prediction = classifier.predict(dataset.data[-1])
     print('Prediction:', prediction)
-    pyplot.imshow(dataset.images[-1], cmap=pyplot.get_cmap('gray'), interpoation='nearest')
-    pyplot.show()
+    matplotlib.pyplot.imshow(
+        dataset.images[-1],
+        cmap=matplotlib.pyplot.get_cmap('gray'),
+        interpoation='nearest'
+        )
+    matplotlib.pyplot.show()
 
 def key_statistics(gather='Total Debt/Equity (mrq)'):
     """
@@ -28,7 +32,8 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
     """
     statistics_path = 'intraQuarter/_KeyStats'
     stock_list = [x[0] for x in os.walk(statistics_path)]
-    for directory in stock_list[1:]:
+    dataframe_a = pandas.DataFrame(columns=['date', 'unix', 'ticker', 'debt to equity'])
+    for directory in stock_list[1:5]:
         files = os.listdir(directory)
         ticker = directory.split('\\')[1]
         if len(files) > 0:
@@ -37,10 +42,23 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                 unix_time = time.mktime(datestamp.timetuple())
                 full_filepath = os.path.join(directory, file)
                 source = open(full_filepath, 'r').read()
-                value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1]
-                value = value.split('</td>')[0]
-                print(ticker + ':', value)
-            time.sleep(15)
+                try:
+                    value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1]
+                    value = float(value.split('</td>')[0])
+                    dataframe_a = dataframe_a.append(
+                        {
+                            'date':datestamp,
+                            'unix':unix_time,
+                            'ticker':ticker,
+                            'debt to equity':value
+                            },
+                        ignore_index=True
+                        )
+                except:
+                    pass
+    dataframe_a.to_csv(
+        gather.replace(' ', '').replace('(', '').replace(')', '').replace('/', '') + '.csv'
+        )
 
 if __name__ == '__main__':
     key_statistics()
