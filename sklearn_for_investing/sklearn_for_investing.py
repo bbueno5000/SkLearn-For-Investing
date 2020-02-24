@@ -32,7 +32,10 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
     """
     statistics_path = 'intraQuarter/_KeyStats'
     stock_list = [x[0] for x in os.walk(statistics_path)]
-    dataframe_a = pandas.DataFrame(columns=['date', 'unix', 'ticker', 'debt to equity'])
+    dataframe_a = pandas.DataFrame(
+        columns=['date', 'unix', 'ticker', 'debt to equity', 'price', 'sp500']
+        )
+    dataframe_sp500 = pandas.DataFrame.from_csv('data.csv')
     for directory in stock_list[1:5]:
         files = os.listdir(directory)
         ticker = directory.split('\\')[1]
@@ -45,12 +48,27 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                 try:
                     value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1]
                     value = float(value.split('</td>')[0])
+                    try:
+                        sp500_date = datetime.datetime.fromtimestamp(
+                            unix_time).strftime('%Y-%m-%d')
+                        row = dataframe_sp500[(dataframe_sp500.index == sp500_date)]
+                        sp500_value = float(row['Adjusted Close'])
+                    except:
+                        sp500_date = datetime.datetime.fromtimestamp(
+                            unix_time-259200).strftime('%Y-%m-%d')
+                        row = dataframe_sp500[(dataframe_sp500.index == sp500_date)]
+                        sp500_value = float(row['Adjusted Close'])
+                    stock_price = float(
+                        source.split('</small><big><b>')[1].split('</b></big>')[0]
+                        )
                     dataframe_a = dataframe_a.append(
                         {
                             'date':datestamp,
                             'unix':unix_time,
                             'ticker':ticker,
-                            'debt to equity':value
+                            'debt to equity':value,
+                            'price':stock_price,
+                            'sp500':sp500_value
                             },
                         ignore_index=True
                         )
