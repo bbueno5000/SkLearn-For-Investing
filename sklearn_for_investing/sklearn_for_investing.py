@@ -19,11 +19,9 @@ def introduction():
     classifier.fit(variable_x, variable_y)
     prediction = classifier.predict(dataset.data[-1])
     print('Prediction:', prediction)
-    pyplot.imshow(
-        dataset.images[-1],
-        cmap=pyplot.get_cmap('gray'),
-        interpoation='nearest'
-        )
+    pyplot.imshow(dataset.images[-1],
+                  cmap=pyplot.get_cmap('gray'),
+                  interpoation='nearest')
     pyplot.show()
 
 def key_statistics(gather='Total Debt/Equity (mrq)'):
@@ -32,13 +30,22 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
     """
     statistics_path = 'intraQuarter/_KeyStats'
     stock_list = [x[0] for x in os.walk(statistics_path)]
-    dataframe_a = pandas.DataFrame(
-        columns=['date', 'unix', 'ticker', 'debt to equity', 'price', 'sp500']
-        )
+    dataframe_a = pandas.DataFrame(columns=['date',
+                                            'unix',
+                                            'ticker',
+                                            'debt_to_equity',
+                                            'price',
+                                            'stock_change',
+                                            'sp500',
+                                            'sp500_change'])
     dataframe_sp500 = pandas.DataFrame.from_csv('data.csv')
+    ticker_list = []
     for directory in stock_list[1:5]:
         files = os.listdir(directory)
         ticker = directory.split('\\')[1]
+        ticker_list.append(ticker)
+        initial_stock_value = False
+        initial_sp500_value = False
         if len(files) > 0:
             for file in files:
                 datestamp = datetime.datetime.strptime(file, '%Y%m%d%H%M%S.html')
@@ -59,24 +66,26 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                         row = dataframe_sp500[(dataframe_sp500.index == sp500_date)]
                         sp500_value = float(row['Adjusted Close'])
                     stock_price = float(
-                        source.split('</small><big><b>')[1].split('</b></big>')[0]
-                        )
-                    dataframe_a = dataframe_a.append(
-                        {
-                            'date':datestamp,
-                            'unix':unix_time,
-                            'ticker':ticker,
-                            'debt to equity':value,
-                            'price':stock_price,
-                            'sp500':sp500_value
-                            },
-                        ignore_index=True
-                        )
+                        source.split('</small><big><b>')[1].split('</b></big>')[0])
+                    if not initial_stock_value:
+                        initial_stock_value = stock_price
+                    if not initial_sp500_value:
+                        initial_sp500_value = sp500_value
+                    stock_change = ((stock_price-initial_stock_value)/initial_stock_valeu)*100
+                    sp500_change = ((sp500_value-initial_sp500_value)/initial_sp500_value)*100
+                    dataframe_a = dataframe_a.append({'date':datestamp,
+                                                      'unix':unix_time,
+                                                      'ticker':ticker,
+                                                      'debt_to_equity':value,
+                                                      'price':stock_price,
+                                                      'stock_change':stock_change,
+                                                      'sp500':sp500_value,
+                                                      'sp500_change':sp500_change},
+                                                     ignore_index=True)
                 except:
                     pass
     dataframe_a.to_csv(
-        gather.replace(' ', '').replace('(', '').replace(')', '').replace('/', '') + '.csv'
-        )
+        gather.replace(' ', '').replace('(', '').replace(')', '').replace('/', '') + '.csv')
 
 if __name__ == '__main__':
     key_statistics()
