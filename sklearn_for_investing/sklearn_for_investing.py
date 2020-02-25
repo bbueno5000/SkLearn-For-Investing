@@ -4,19 +4,19 @@ DOCSTRING
 import datetime
 import matplotlib.pyplot as pyplot
 import matplotlib.style as style
+import numpy
 import os
 import pandas
-import sklearn
+import sklearn.datasets as datasets
+import sklearn.svm as svm
 import time
-
-style.use('dark_background')
 
 def introduction():
     """
     DOCSTRING
     """
-    dataset = sklearn.datasets.load_digits(return_X_y=True)
-    classifier = sklearn.svm.SVC(gamma=0.001, C=100)
+    dataset = datasets.load_digits(return_X_y=True)
+    classifier = svm.SVC(gamma=0.001, C=100)
     variable_x = dataset.data[:-1]
     variable_y = dataset.target[:-1]
     classifier.fit(variable_x, variable_y)
@@ -31,6 +31,7 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
     """
     DOCSTRING
     """
+    style.use('dark_background')
     statistics_path = 'intraQuarter/_KeyStats'
     stock_list = [x[0] for x in os.walk(statistics_path)]
     dataframe_a = pandas.DataFrame(columns=['date',
@@ -112,5 +113,28 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
     dataframe_a.to_csv(
         gather.replace(' ', '').replace('(', '').replace(')', '').replace('/', '') + '.csv')
 
+def support_vector_machine():
+    """
+    DOCSTRING
+    """
+    style.use('ggplot')
+    variable_x = [1, 5, 1.5, 8, 1, 9]
+    variable_y = [2, 8, 1.8, 8, 0.6, 11]
+    pyplot.scatter(variable_x, variable_y)
+    pyplot.show()
+    variable_X = numpy.array([[1, 2], [5, 8], [1.5, 1.8], [8, 8], [1, 0.6], [9, 11]])
+    variable_y = [0, 1, 0, 1, 0, 1]
+    classifier = svm.SVC(kernel='linear', C=1.0)
+    classifier.fit(variable_X, variable_y)
+    print(classifier.predict([[0.58, 0.76]]))
+    variable_w = classifier.coef_[0]
+    variable_a = -variable_w[0]/variable_w[1]
+    variable_xx = numpy.linspace(0, 12)
+    variable_yy = (variable_a*variable_xx-classifier.intercept_[0])/variable_w[1]
+    variable_h0 = pyplot.plot(variable_xx, variable_yy, 'k-', label='Non-Weighted Division')
+    pyplot.scatter(variable_X[:, 0], variable_X[:, 1], c=variable_y)
+    pyplot.legend()
+    pyplot.show()
+
 if __name__ == '__main__':
-    key_statistics()
+    support_vector_machine()
