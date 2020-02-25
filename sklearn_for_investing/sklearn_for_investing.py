@@ -41,7 +41,8 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                                             'stock_change',
                                             'sp500',
                                             'sp500_change',
-                                            'difference'])
+                                            'difference',
+                                            'underperformed'])
     dataframe_sp500 = pandas.DataFrame.from_csv('data.csv')
     ticker_list = []
     for directory in stock_list[1:5]:
@@ -77,6 +78,11 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                         initial_sp500_value = sp500_value
                     stock_change = ((stock_price-initial_stock_value)/initial_stock_valeu)*100
                     sp500_change = ((sp500_value-initial_sp500_value)/initial_sp500_value)*100
+                    difference = stock_change-sp500_change
+                    if difference > 0:
+                        underperformed = False
+                    else:
+                        underperformed = True
                     dataframe_a = dataframe_a.append({'date':datestamp,
                                                       'unix':unix_time,
                                                       'ticker':ticker,
@@ -85,7 +91,8 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                                                       'stock_change':stock_change,
                                                       'sp500':sp500_value,
                                                       'sp500_change':sp500_change,
-                                                      'difference':stock_change-sp500_change},
+                                                      'difference':difference,
+                                                      'underperformed':underperformed},
                                                      ignore_index=True)
                 except:
                     pass
@@ -93,7 +100,11 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
         try:
             dataframe_plot = dataframe_a[dataframe_a['ticker'] == element]
             dataframe_plot = dataframe_plot.set_index(['date'])
-            dataframe_plot['difference'].plot(label=element)
+            if dataframe_plot['underperformed'][-1]:
+                color = 'r'
+            else:
+                color = 'g'
+            dataframe_plot['difference'].plot(label=element, color=color)
             pyplot.legend()
         except:
             pass
