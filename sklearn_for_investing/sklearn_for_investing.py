@@ -2,11 +2,14 @@
 DOCSTRING
 """
 import datetime
+import matplotlib.pyplot as pyplot
+import matplotlib.style as style
 import os
-import time
 import pandas
 import sklearn
-import matplotlib.pyplot as pyplot
+import time
+
+style.use('dark_background')
 
 def introduction():
     """
@@ -37,7 +40,8 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                                             'price',
                                             'stock_change',
                                             'sp500',
-                                            'sp500_change'])
+                                            'sp500_change',
+                                            'difference'])
     dataframe_sp500 = pandas.DataFrame.from_csv('data.csv')
     ticker_list = []
     for directory in stock_list[1:5]:
@@ -80,10 +84,20 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                                                       'price':stock_price,
                                                       'stock_change':stock_change,
                                                       'sp500':sp500_value,
-                                                      'sp500_change':sp500_change},
+                                                      'sp500_change':sp500_change,
+                                                      'difference':stock_change-sp500_change},
                                                      ignore_index=True)
                 except:
                     pass
+    for element in ticker_list:
+        try:
+            dataframe_plot = dataframe_a[dataframe_a['ticker'] == element]
+            dataframe_plot = dataframe_plot.set_index(['date'])
+            dataframe_plot['difference'].plot(label=element)
+            pyplot.legend()
+        except:
+            pass
+    pyplot.show()
     dataframe_a.to_csv(
         gather.replace(' ', '').replace('(', '').replace(')', '').replace('/', '') + '.csv')
 
