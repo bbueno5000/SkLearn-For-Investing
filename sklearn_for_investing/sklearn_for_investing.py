@@ -27,23 +27,91 @@ def introduction():
                   interpoation='nearest')
     pyplot.show()
 
-def key_statistics(gather='Total Debt/Equity (mrq)'):
+def key_statistics(gather=['Beta',
+                           'Book Value Per Share',
+                           'Cash Flow',
+                           'Current Ratio',
+                           'Diluted EPS',
+                           'Earnings Growth',
+                           'EBITDA',
+                           'Enterprise Value',
+                           'Enterprise Value/EBITDA',
+                           'Enterprise Value/Revenue',
+                           'Forward P/E',
+                           'Gross Profit',
+                           'Held by Insiders',
+                           'Held by Institutions',
+                           'Market Cap',
+                           'Net Income Avl to Common ',
+                           'Operating Margin',
+                           'PEG Ratio',
+                           'Price/Book',
+                           'Price/Sales',
+                           'Profit Margin',
+                           'Return on Assets',
+                           'Return on Equity',
+                           'Revenue',
+                           'Revenue Growth',
+                           'Revenue Per Share',
+                           'Shares Short (as of',
+                           'Shares Short (prior ',
+                           'Short % of Float',
+                           'Short Ratio',
+                           'Total Cash',
+                           'Total Cash Per Share',
+                           'Total Debt',
+                           'Total Debt/Equity (mrq)',
+                           'Trailing P/E']):
     """
     DOCSTRING
     """
     style.use('dark_background')
     statistics_path = 'intraQuarter/_KeyStats'
     stock_list = [x[0] for x in os.walk(statistics_path)]
-    dataframe_a = pandas.DataFrame(columns=['date',
-                                            'unix',
-                                            'ticker',
-                                            'debt_to_equity',
-                                            'price',
-                                            'stock_change',
-                                            'sp500',
-                                            'sp500_change',
-                                            'difference',
-                                            'underperformed'])
+    dataframe_a = pandas.DataFrame(columns=['Beta',
+                                            'Book Value Per Share',
+                                            'Cash Flow',
+                                            'Date',
+                                            'DE Ratio',
+                                            'Difference',
+                                            'Diluted EPS',
+                                            'Earnings Growth',
+                                            'Current Ratio',
+                                            'EBITDA',
+                                            'Enterprise Value',
+                                            'Enterprise Value/EBITDA',
+                                            'Enterprise Value/Revenue',
+                                            'Forward P/E',
+                                            'Gross Profit',
+                                            'Held by Insiders',
+                                            'Held by Institutions',
+                                            'Market Cap',
+                                            'Net Income Avl to Common ',
+                                            'Operating Margin',
+                                            'PEG Ratio',
+                                            'Price',
+                                            'Price/Book',
+                                            'Price/Sales',
+                                            'Profit Margin',
+                                            'Return on Assets',
+                                            'Return on Equity',
+                                            'Revenue',
+                                            'Revenue Growth',
+                                            'Revenue Per Share',
+                                            'Shares Short (as of',
+                                            'Shares Short (prior ',
+                                            'Short % of Float',
+                                            'Short Ratio',
+                                            'SP500',
+                                            'SP500_change',
+                                            'Stock_change',
+                                            'Ticker',
+                                            'Total Cash',
+                                            'Total Cash Per Share',
+                                            'Total Debt',
+                                            'Trailing P/E',
+                                            'Underperformed',
+                                            'Unix'])
     dataframe_sp500 = pandas.DataFrame.from_csv('data.csv')
     ticker_list = []
     for directory in stock_list[1:5]:
@@ -59,8 +127,10 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                 full_filepath = os.path.join(directory, file)
                 source = open(full_filepath, 'r').read()
                 try:
-                    value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1]
-                    value = float(value.split('</td>')[0])
+                    value_list = []
+                    for data in gather:
+                        value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1]
+                        value = float(value.split('</td>')[0])
                     try:
                         sp500_date = datetime.datetime.fromtimestamp(
                             unix_time).strftime('%Y-%m-%d')
@@ -85,15 +155,15 @@ def key_statistics(gather='Total Debt/Equity (mrq)'):
                     else:
                         underperformed = True
                     dataframe_a = dataframe_a.append({'date':datestamp,
-                                                      'unix':unix_time,
-                                                      'ticker':ticker,
                                                       'debt_to_equity':value,
+                                                      'difference':difference,
                                                       'price':stock_price,
-                                                      'stock_change':stock_change,
                                                       'sp500':sp500_value,
                                                       'sp500_change':sp500_change,
-                                                      'difference':difference,
-                                                      'underperformed':underperformed},
+                                                      'stock_change':stock_change,
+                                                      'ticker':ticker,
+                                                      'underperformed':underperformed,
+                                                      'unix':unix_time},
                                                      ignore_index=True)
                 except:
                     pass
