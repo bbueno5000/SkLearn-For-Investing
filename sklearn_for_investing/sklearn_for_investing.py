@@ -2,43 +2,78 @@
 DOCSTRING
 """
 import datetime
+import os
+import time
+
 import matplotlib.pyplot as pyplot
 import matplotlib.style as style
 import numpy
-import os
 import pandas
 import sklearn.datasets as datasets
+import sklearn.preprocessing as preprocessing
 import sklearn.svm as svm
-import time
+
+FEATURES =  ['DE Ratio',
+             'Trailing P/E',
+             'Price/Sales',
+             'Price/Book',
+             'Profit Margin',
+             'Operating Margin',
+             'Return on Assets',
+             'Return on Equity',
+             'Revenue Per Share',
+             'Market Cap',
+             'Enterprise Value',
+             'Forward P/E',
+             'PEG Ratio',
+             'Enterprise Value/Revenue',
+             'Enterprise Value/EBITDA',
+             'Revenue',
+             'Gross Profit',
+             'EBITDA',
+             'Net Income Avl to Common ',
+             'Diluted EPS',
+             'Earnings Growth',
+             'Revenue Growth',
+             'Total Cash',
+             'Total Cash Per Share',
+             'Total Debt',
+             'Current Ratio',
+             'Book Value Per Share',
+             'Cash Flow',
+             'Beta',
+             'Held by Insiders',
+             'Held by Institutions',
+             'Shares Short (as of',
+             'Short Ratio',
+             'Short % of Float',
+             'Shares Short (prior ']
 
 def analysis():
     """
     DOCSTRING
     """
+    test_size = 500
     variable_x, variable_y = build_data_set()
     classifier = svm.SVC(kernel='Linear', C=1.0)
-    classifier.fit(variable_x, variable_y)
-    #variable_w = classifier.coef_[0]
-    #variable_a = -variable_w[0]/variable_w[1]
-    #variable_xx = numpy.linspace(min(variable_x[:, 0]), max(variable_x[:, 0]))
-    #variable_yy = (variable_a*variable_xx-classifier.intercept_[0])/variable_w[1]
-    #variable_h0 = pyplot.plot(variable_xx, variable_yy, 'k-', label='Non-Weighted')
-    pyplot.scatter(variable_x[:, 0], variable_x[:, 1], c=variable_y)
-    pyplot.xlabel('DE Ratio')
-    pyplot.ylabel('Trailing P/E')
-    pyplot.legend()
-    pyplot.show()
+    classifier.fit(variable_x[:-test_size], variable_y[:-test_size])
+    correct_count = 0
+    for count in range(1, test_size+1):
+        if classifier.predict(variable_x[-count])[0] == variable_y[-count]:
+            correct_count += 1
+    print('Accuracy:', (correct_count/test_size)*100.00)
 
-def build_data_set(features=['DE Ratio', 'Trailing P/E']):
+def build_data_set():
     """
     DOCSTRING
     """
     dataframe_a = pandas.DataFrame.from_csv('data.csv')
-    variable_x = numpy.array(dataframe_a[features].values)
+    variable_x = numpy.array(dataframe_a[FEATURES].values)
     variable_y = (dataframe_a['Underperformed']
                   .replace(True, 0)
                   .replace(False, 1)
                   .valuse.to_list())
+    variable_x = preprocessing.scale(variable_x)
     return variable_x, variable_y
 
 def introduction():
