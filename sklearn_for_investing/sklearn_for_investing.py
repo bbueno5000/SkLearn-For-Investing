@@ -11,6 +11,36 @@ import sklearn.datasets as datasets
 import sklearn.svm as svm
 import time
 
+def analysis():
+    """
+    DOCSTRING
+    """
+    variable_x, variable_y = build_data_set()
+    classifier = svm.SVC(kernel='Linear', C=1.0)
+    classifier.fit(variable_x, variable_y)
+    #variable_w = classifier.coef_[0]
+    #variable_a = -variable_w[0]/variable_w[1]
+    #variable_xx = numpy.linspace(min(variable_x[:, 0]), max(variable_x[:, 0]))
+    #variable_yy = (variable_a*variable_xx-classifier.intercept_[0])/variable_w[1]
+    #variable_h0 = pyplot.plot(variable_xx, variable_yy, 'k-', label='Non-Weighted')
+    pyplot.scatter(variable_x[:, 0], variable_x[:, 1], c=variable_y)
+    pyplot.xlabel('DE Ratio')
+    pyplot.ylabel('Trailing P/E')
+    pyplot.legend()
+    pyplot.show()
+
+def build_data_set(features=['DE Ratio', 'Trailing P/E']):
+    """
+    DOCSTRING
+    """
+    dataframe_a = pandas.DataFrame.from_csv('data.csv')
+    variable_x = numpy.array(dataframe_a[features].values)
+    variable_y = (dataframe_a['Underperformed']
+                  .replace(True, 0)
+                  .replace(False, 1)
+                  .valuse.to_list())
+    return variable_x, variable_y
+
 def introduction():
     """
     DOCSTRING
@@ -127,8 +157,7 @@ def key_statistics(gather=['Beta',
                 full_filepath = os.path.join(directory, file)
                 source = open(full_filepath, 'r').read()
                 try:
-                    value_list = []
-                    for data in gather:
+                    for _ in gather:
                         value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1]
                         value = float(value.split('</td>')[0])
                     try:
@@ -192,17 +221,17 @@ def support_vector_machine():
     variable_y = [2, 8, 1.8, 8, 0.6, 11]
     pyplot.scatter(variable_x, variable_y)
     pyplot.show()
-    variable_X = numpy.array([[1, 2], [5, 8], [1.5, 1.8], [8, 8], [1, 0.6], [9, 11]])
+    variable_z = numpy.array([[1, 2], [5, 8], [1.5, 1.8], [8, 8], [1, 0.6], [9, 11]])
     variable_y = [0, 1, 0, 1, 0, 1]
     classifier = svm.SVC(kernel='linear', C=1.0)
-    classifier.fit(variable_X, variable_y)
+    classifier.fit(variable_z, variable_y)
     print(classifier.predict([[0.58, 0.76]]))
-    variable_w = classifier.coef_[0]
-    variable_a = -variable_w[0]/variable_w[1]
-    variable_xx = numpy.linspace(0, 12)
-    variable_yy = (variable_a*variable_xx-classifier.intercept_[0])/variable_w[1]
-    variable_h0 = pyplot.plot(variable_xx, variable_yy, 'k-', label='Non-Weighted Division')
-    pyplot.scatter(variable_X[:, 0], variable_X[:, 1], c=variable_y)
+    #variable_w = classifier.coef_[0]
+    #variable_a = -variable_w[0]/variable_w[1]
+    #variable_xx = numpy.linspace(0, 12)
+    #variable_yy = (variable_a*variable_xx-classifier.intercept_[0])/variable_w[1]
+    #variable_h0 = pyplot.plot(variable_xx, variable_yy, 'k-', label='Non-Weighted Division')
+    pyplot.scatter(variable_z[:, 0], variable_z[:, 1], c=variable_y)
     pyplot.legend()
     pyplot.show()
 
