@@ -14,48 +14,41 @@ import sklearn.datasets as datasets
 import sklearn.preprocessing as preprocessing
 import sklearn.svm as svm
 
-quandl_token = open('auth.txt', 'r').read()
-
-data = quandl.get('WIKI/KO',
-                  trim_start='2000-12-12',
-                  trim_end='2014-12-30',
-                  auth_token=quandl_token)
-
-FEATURES =  ['DE Ratio',
-             'Trailing P/E',
-             'Price/Sales',
-             'Price/Book',
-             'Profit Margin',
-             'Operating Margin',
-             'Return on Assets',
-             'Return on Equity',
-             'Revenue Per Share',
-             'Market Cap',
-             'Enterprise Value',
-             'Forward P/E',
-             'PEG Ratio',
-             'Enterprise Value/Revenue',
-             'Enterprise Value/EBITDA',
-             'Revenue',
-             'Gross Profit',
-             'EBITDA',
-             'Net Income Avl to Common ',
-             'Diluted EPS',
-             'Earnings Growth',
-             'Revenue Growth',
-             'Total Cash',
-             'Total Cash Per Share',
-             'Total Debt',
-             'Current Ratio',
-             'Book Value Per Share',
-             'Cash Flow',
-             'Beta',
-             'Held by Insiders',
-             'Held by Institutions',
-             'Shares Short (as of',
-             'Short Ratio',
-             'Short % of Float',
-             'Shares Short (prior ']
+FEATURES = ['DE Ratio',
+            'Trailing P/E',
+            'Price/Sales',
+            'Price/Book',
+            'Profit Margin',
+            'Operating Margin',
+            'Return on Assets',
+            'Return on Equity',
+            'Revenue Per Share',
+            'Market Cap',
+            'Enterprise Value',
+            'Forward P/E',
+            'PEG Ratio',
+            'Enterprise Value/Revenue',
+            'Enterprise Value/EBITDA',
+            'Revenue',
+            'Gross Profit',
+            'EBITDA',
+            'Net Income Avl to Common ',
+            'Diluted EPS',
+            'Earnings Growth',
+            'Revenue Growth',
+            'Total Cash',
+            'Total Cash Per Share',
+            'Total Debt',
+            'Current Ratio',
+            'Book Value Per Share',
+            'Cash Flow',
+            'Beta',
+            'Held by Insiders',
+            'Held by Institutions',
+            'Shares Short (as of',
+            'Short Ratio',
+            'Short % of Float',
+            'Shares Short (prior ']
 
 class SklearnInvesting():
     """
@@ -266,6 +259,26 @@ class SklearnInvesting():
         """
         dataframe_a = pandas.DataFrame({'D1':range(5), 'D2':range(5)})
         dataframe_b = dataframe_a.reindex(numpy.random.permutation(dataframe_a.index))
+
+    def stock_prices(self):
+        """
+        DOCSTRING
+        """
+        string_a = open('auth.txt', 'r').read()
+        string_b = 'intraQuarter/_KeyStats'
+        list_a = [x[0] for x in os.walk(string_b)]
+        dataframe_a = pandas.DataFrame()
+        for element in list_a[1:]:
+            string_c = element.split('\\')[1]
+            string_d = 'WIKI/' + string_c.upper()
+            dataframe_b = quandl.get(
+                string_d,
+                trim_start='2000-12-12',
+                trim_end='2014-12-30',
+                auth_token=string_a)
+            dataframe_b[string_c.upper()] = dataframe_b['Adj. Close']
+            dataframe_a = pandas.concat([dataframe_a, dataframe_b['ticker.upper()']], axis=1)
+        dataframe_a.to_csv('stock_prices.csv')
 
     def support_vector_machine(self):
         """
