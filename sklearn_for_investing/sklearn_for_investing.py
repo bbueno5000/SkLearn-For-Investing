@@ -9,9 +9,17 @@ import matplotlib.pyplot as pyplot
 import matplotlib.style as style
 import numpy
 import pandas
+import quandl
 import sklearn.datasets as datasets
 import sklearn.preprocessing as preprocessing
 import sklearn.svm as svm
+
+quandl_token = open('auth.txt', 'r').read()
+
+data = quandl.get('WIKI/KO',
+                  trim_start='2000-12-12',
+                  trim_end='2014-12-30',
+                  auth_token=quandl_token)
 
 FEATURES =  ['DE Ratio',
              'Trailing P/E',
